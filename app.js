@@ -70,7 +70,7 @@ async function fetchListens() {
   }
 }
 
-// Function to display listens in the UI
+// Function to display listens in the UI, differentiating between mapped and unmapped listens
 function displayListens(listens) {
   listensContainer.innerHTML = '';  // Clear previous listens
 
@@ -100,12 +100,24 @@ function displayListens(listens) {
     const artistName = trackMetadata.artist_name;
     const trackName = trackMetadata.track_name;
 
+    // Check if the listen is mapped or unmapped (no recording MBID)
+    const isMapped = recordingMbid !== null;
+
     const listenItem = document.createElement('div');
     listenItem.classList.add('listen-item');
-    listenItem.innerHTML = `
-      <input type="checkbox" class="listen-checkbox" id="listen-${index}" value="${recordingMbid}">
-      <label for="listen-${index}"><strong>${trackName}</strong> by ${artistName}</label>
-    `;
+    
+    if (isMapped) {
+      listenItem.innerHTML = `
+        <input type="checkbox" class="listen-checkbox" id="listen-${index}" value="${recordingMbid}">
+        <label for="listen-${index}"><strong>${trackName}</strong> by ${artistName}</label>
+      `;
+    } else {
+      listenItem.innerHTML = `
+        <input type="checkbox" class="listen-checkbox" id="listen-${index}" disabled>
+        <label for="listen-${index}" style="color: #999;"><strong>${trackName}</strong> by ${artistName} (Unmapped)</label>
+      `;
+    }
+
     listensContainer.appendChild(listenItem);
   });
 }
@@ -115,7 +127,9 @@ function toggleSelectAll() {
   const checkboxes = document.querySelectorAll('.listen-checkbox');
   const isChecked = selectAllCheckbox.checked;
   checkboxes.forEach(checkbox => {
-    checkbox.checked = isChecked;
+    if (!checkbox.disabled) {
+      checkbox.checked = isChecked;
+    }
   });
 }
 
