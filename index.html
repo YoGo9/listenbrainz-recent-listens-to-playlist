@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ListenBrainz Playlist Tool</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    .container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      width: 100%;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #28a745;
+      border: none;
+      color: #fff;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    #add-button {
+      margin-top: 15px;
+      background-color: #007bff;
+    }
+
+    #add-button:hover {
+      background-color: #0069d9;
+    }
+
+    #listens-container {
+      margin-top: 20px;
+    }
+
+    .listen-item {
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    .listen-item input[type="checkbox"] {
+      margin-right: 10px;
+      transform: scale(1.2);  /* Makes the checkbox a bit bigger */
+    }
+
+    .listen-item label {
+      font-weight: normal;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        max-width: 90%;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+  <h1>ListenBrainz Playlist Tool</h1>
+
+  <div class="container">
+    <!-- User input fields -->
+    <div>
+      <label for="username">Username:</label>
+      <input type="text" id="username" placeholder="Enter ListenBrainz username" required>
+    </div>
+
+    <div>
+      <label for="api-token">API Token:</label>
+      <input type="text" id="api-token" placeholder="Enter your API token" required>
+    </div>
+
+    <div>
+      <label for="playlist-mbid">Playlist MBID:</label>
+      <input type="text" id="playlist-mbid" placeholder="Enter your playlist MBID" required>
+    </div>
+
+    <div>
+      <label for="num-listens">Number of Recent Listens:</label>
+      <input type="number" id="num-listens" value="10" placeholder="Enter number of recent listens">
+    </div>
+
+    <button onclick="fetchListens()">Fetch Listens</button>
+
+    <div id="listens-container"></div>
+
+    <button id="add-button" onclick="addToPlaylist()" style="display: none;">Add to Playlist</button>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
