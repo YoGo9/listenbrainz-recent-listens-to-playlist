@@ -2,6 +2,9 @@ const listensContainer = document.getElementById('listens-container');
 const addButton = document.getElementById('add-button');
 const selectAllCheckbox = document.createElement('input');
 
+// Placeholder image URL for when no cover art is available
+const placeholderCoverArtUrl = 'https://via.placeholder.com/50x50.png?text=No+Art';
+
 // Variables to hold user input values
 let listenBrainzToken = '';
 let playlistMbid = '';
@@ -70,7 +73,7 @@ async function fetchListens() {
   }
 }
 
-// Function to display listens in the UI, differentiating between mapped and unmapped listens
+// Function to display listens in the UI, now with better-aligned cover art
 function displayListens(listens) {
   listensContainer.innerHTML = '';  // Clear previous listens
 
@@ -93,30 +96,29 @@ function displayListens(listens) {
   selectAllContainer.appendChild(selectAllLabel);
   listensContainer.appendChild(selectAllContainer);
 
-  // Render each listen
+  // Render each listen with cover art
   listens.forEach((listen, index) => {
     const trackMetadata = listen.track_metadata;
     const recordingMbid = trackMetadata.mbid_mapping ? trackMetadata.mbid_mapping.recording_mbid : null;
     const artistName = trackMetadata.artist_name;
     const trackName = trackMetadata.track_name;
+    const releaseMbid = trackMetadata.mbid_mapping ? trackMetadata.mbid_mapping.release_mbid : null;
 
-    // Check if the listen is mapped or unmapped (no recording MBID)
     const isMapped = recordingMbid !== null;
 
     const listenItem = document.createElement('div');
     listenItem.classList.add('listen-item');
-    
-    if (isMapped) {
-      listenItem.innerHTML = `
-        <input type="checkbox" class="listen-checkbox" id="listen-${index}" value="${recordingMbid}">
-        <label for="listen-${index}"><strong>${trackName}</strong> by ${artistName}</label>
-      `;
-    } else {
-      listenItem.innerHTML = `
-        <input type="checkbox" class="listen-checkbox" id="listen-${index}" disabled>
-        <label for="listen-${index}" style="color: #999;"><strong>${trackName}</strong> by ${artistName} (Unmapped)</label>
-      `;
-    }
+    listenItem.style.display = 'flex';
+    listenItem.style.alignItems = 'center';  // Aligns items vertically in the center
+
+    // Add cover art if available or use placeholder image
+    let coverArtUrl = releaseMbid ? `https://coverartarchive.org/release/${releaseMbid}/front` : placeholderCoverArtUrl;
+
+    listenItem.innerHTML = `
+      <img src="${coverArtUrl}" alt="Cover Art" style="width: 50px; height: 50px; margin-right: 15px; border-radius: 5px;">
+      <input type="checkbox" class="listen-checkbox" id="listen-${index}" ${isMapped ? `value="${recordingMbid}"` : 'disabled'}>
+      <label for="listen-${index}" ${!isMapped ? 'style="color: #999;"' : ''}><strong>${trackName}</strong> by ${artistName} ${!isMapped ? '(Unmapped)' : ''}</label>
+    `;
 
     listensContainer.appendChild(listenItem);
   });
